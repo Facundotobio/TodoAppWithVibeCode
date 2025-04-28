@@ -7,6 +7,18 @@ const pool = new Pool({
   database: process.env.POSTGRES_DB,
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
+  ssl: {
+    require: true,
+    rejectUnauthorized: false
+  },
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+
+// Agregar listener para errores de conexión
+pool.on('error', (err) => {
+  console.error('Error inesperado en el pool de PostgreSQL:', err);
 });
 
 export async function GET(req: NextRequest) {
@@ -29,11 +41,18 @@ export async function GET(req: NextRequest) {
       query += ' WHERE ' + conditions.join(' AND ');
     }
     query += ' ORDER BY id DESC';
+
+    // Agregar log para debugging
+    console.log('Ejecutando query:', query, 'con parámetros:', params);
+
     const { rows } = await pool.query(query, params);
     return NextResponse.json(rows);
   } catch (error) {
-    console.error('Error en GET:', error);
-    return NextResponse.json({ error: 'Error al obtener tareas' }, { status: 500 });
+    console.error('Error detallado en GET:', error);
+    return NextResponse.json(
+      { error: 'Error al obtener tareas', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
 }
 
