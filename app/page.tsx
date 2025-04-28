@@ -33,8 +33,17 @@ export default function Home() {
   };
 
   useEffect(() => {
-    cargarTareas();
-  }, [filtroNombre, filtroEstado]);
+    const fetchTareas = async () => {
+      try {
+        await cargarTareas();
+      } catch (error) {
+        console.error('Error al cargar tareas:', error);
+        setError('Error al cargar las tareas');
+      }
+    };
+    
+    fetchTareas();
+  }, [filtroNombre, filtroEstado, cargarTareas]);
 
   const limpiarFormulario = () => {
     setNombre("");
@@ -145,7 +154,10 @@ export default function Home() {
           />
         </div>
         <div className="input-group">
-          <select value={estado} onChange={e => setEstado(e.target.value as any)}>
+          <select 
+            value={estado} 
+            onChange={e => setEstado(e.target.value as "pendiente" | "completada")}
+          >
             <option value="pendiente">Pendiente</option>
             <option value="completada">Completada</option>
           </select>
