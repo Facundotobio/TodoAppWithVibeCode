@@ -8,7 +8,6 @@ const pool = new Pool({
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   ssl: {
-    require: true,
     rejectUnauthorized: false
   },
   max: 20,
