@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 interface Tarea {
   id: number;
@@ -8,6 +8,10 @@ interface Tarea {
   estado: "pendiente" | "completada";
   fecha_creacion: string;
   fecha_actualizacion: string;
+}
+
+interface ApiError {
+  message: string;
 }
 
 export default function Home() {
@@ -21,7 +25,7 @@ export default function Home() {
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const cargarTareas = async () => {
+  const cargarTareas = useCallback(async () => {
     let url = "/api/todos";
     const params = [];
     if (filtroNombre) params.push(`nombre=${encodeURIComponent(filtroNombre)}`);
@@ -30,7 +34,7 @@ export default function Home() {
     const res = await fetch(url);
     const data = await res.json();
     setTareas(data);
-  };
+  }, [filtroNombre, filtroEstado]);
 
   useEffect(() => {
     const fetchTareas = async () => {
@@ -43,7 +47,7 @@ export default function Home() {
     };
     
     fetchTareas();
-  }, [filtroNombre, filtroEstado, cargarTareas]);
+  }, [cargarTareas]);
 
   const limpiarFormulario = () => {
     setNombre("");
@@ -85,8 +89,9 @@ export default function Home() {
       }
       limpiarFormulario();
       cargarTareas();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      setError(apiError.message || 'Error desconocido');
     }
   };
 
@@ -110,8 +115,9 @@ export default function Home() {
       if (!res.ok) throw new Error("Error al eliminar tarea");
       setMensaje("Tarea eliminada correctamente");
       cargarTareas();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      setError(apiError.message || 'Error desconocido');
     }
   };
 
@@ -127,8 +133,9 @@ export default function Home() {
       if (!res.ok) throw new Error("Error al actualizar estado");
       setMensaje("Estado actualizado");
       cargarTareas();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      setError(apiError.message || 'Error desconocido');
     }
   };
 

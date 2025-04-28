@@ -9,11 +9,6 @@ const pool = new Pool({
   password: process.env.POSTGRES_PASSWORD,
 });
 
-interface QueryParams {
-  nombre?: string;
-  estado?: string;
-}
-
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);

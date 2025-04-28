@@ -16,6 +16,8 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@swc/cli": "^0.7.3",
+    "@swc/core": "^1.11.22",
     "@types/node": "^20",
     "@types/pg": "^8.11.14",
     "@types/react": "^19",
