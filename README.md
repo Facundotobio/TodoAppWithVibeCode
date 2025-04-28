@@ -1,3 +1,5 @@
+This app was created using the vibe coding methodology in approximately 2 hours; it is the first app I have created using this methodology.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
